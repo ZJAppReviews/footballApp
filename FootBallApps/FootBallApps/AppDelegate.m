@@ -13,21 +13,43 @@
 //#import "MMExampleLeftSideDrawerViewController.h"
 //#import "MMExampleRightSideDrawerViewController.h"
 #import "MMDrawerVisualState.h"
-//#import "MMExampleDrawerVisualStateManager.h"
-
+#import "MMExampleDrawerVisualStateManager.h"
+#import "LeftMenuViewController.h"
+#import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation AppDelegate
 
-- (void)dealloc
-{
-    [_window release];
-    [super dealloc];
-}
-
+ 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    //init Left & Main
+    LeftMenuViewController* left = [[LeftMenuViewController alloc]init] ;
+    MainViewController* center = [[MainViewController alloc]initWithStyle:UITableViewStyleGrouped];
+    UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:center];
+    
+    MMDrawerController * drawerController = [[MMDrawerController alloc]
+                                             initWithCenterViewController:navigationController
+                                             leftDrawerViewController:left rightDrawerViewController:left] ;
+     
+    //keyPoint
+    [drawerController setMaximumLeftDrawerWidth:200.0];
+    //  [drawerController setMaximumRightDrawerWidth:200.0];
+    [drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+    [drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+    
+    [drawerController
+     setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
+         MMDrawerControllerDrawerVisualStateBlock block;
+         block = [[MMExampleDrawerVisualStateManager sharedManager]
+                  drawerVisualStateBlockForDrawerSide:drawerSide];
+         if(block){
+             block(drawerController, drawerSide, percentVisible);
+         }
+     }];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window setRootViewController:drawerController];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

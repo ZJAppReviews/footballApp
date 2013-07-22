@@ -38,7 +38,7 @@
             sideDrawerViewController = drawerController.leftDrawerViewController;
             translateTransform = CATransform3DMakeTranslation((maxDistance-distance), 0.0, 0.0);
         }
-        else if(drawerSide == MMDrawerSideRight){
+        else {
             sideDrawerViewController = drawerController.rightDrawerViewController;
             translateTransform = CATransform3DMakeTranslation(-(maxDistance-distance), 0.0, 0.0);
         }
@@ -64,7 +64,7 @@
         CGFloat angle = 0.0;
         
         if(drawerSide==MMDrawerSideLeft){
-            
+         
             sideDrawerViewController = drawerController.leftDrawerViewController;
             anchorPoint =  CGPointMake(1.0, .5);
             maxDrawerWidth = MAX(drawerController.maximumLeftDrawerWidth,drawerController.visibleLeftDrawerWidth);

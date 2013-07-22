@@ -175,9 +175,11 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
     }
     else {
         if((drawerSide == MMDrawerSideLeft &&
-           self.openSide == MMDrawerSideLeft) ||
-           (drawerSide == MMDrawerSideRight &&
-           self.openSide == MMDrawerSideRight)){
+           self.openSide == MMDrawerSideLeft)
+            ||
+           ((drawerSide == MMDrawerSideRight &&
+            self.openSide == MMDrawerSideRight))
+           ){
             [self closeDrawerAnimated:animated completion:completion];
         }
         else if(completion){
@@ -372,7 +374,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
             targetClosePoint = -CGRectGetWidth(self.view.bounds);
         }
         else if(self.openSide == MMDrawerSideLeft) {
-            targetClosePoint = CGRectGetWidth(self.view.bounds);
+            targetClosePoint = self.maximumLeftDrawerWidth;
         }
         
         CGFloat distance = ABS(self.centerContainerView.frame.origin.x-targetClosePoint);
@@ -771,6 +773,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
         case UIGestureRecognizerStateBegan:
             self.startingPanRect = self.centerContainerView.frame;
         case UIGestureRecognizerStateChanged:{
+            
             CGRect newFrame = self.startingPanRect;
             CGPoint translatedPoint = [panGesture translationInView:self.centerContainerView];
             newFrame.origin.x = [self roundedOriginXForDrawerConstriants:CGRectGetMinX(self.startingPanRect)+translatedPoint.x];
@@ -780,10 +783,13 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
             MMDrawerSide visibleSide = MMDrawerSideNone;
             CGFloat percentVisible = 0.0;
             if(xOffset > 0){
+                  //NSLog(@"start Paning Left......");
                 visibleSide = MMDrawerSideLeft;
                 percentVisible = xOffset/self.maximumLeftDrawerWidth;
             }
             else if(xOffset < 0){
+               // NSLog(@"start Paning Right......");
+                break;
                 visibleSide = MMDrawerSideRight;
                 percentVisible = ABS(xOffset)/self.maximumRightDrawerWidth;
             }
